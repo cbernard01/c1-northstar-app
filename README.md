@@ -26,10 +26,10 @@ A modern Next.js application with Microsoft Entra ID authentication, built for e
 
 2. **Set up environment variables:**
    ```bash
-   cp .env.local.example .env.local
+   cp .env.example .env
    ```
    
-   Update `.env.local` with your values:
+   Update `.env` with your values:
    - Database connection string
    - NextAuth configuration
    - Microsoft Entra ID credentials
