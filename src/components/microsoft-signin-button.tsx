@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { Loader2 } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { useState } from "react";
 import { BsMicrosoft } from "react-icons/bs";
 
 interface MicrosoftSignInButtonProps {

@@ -1,0 +1,522 @@
+{
+  "micro_interactions_specification": {
+    "version": "1.0.0",
+    "target_audience": "B2B Sales Intelligence Platform",
+    "design_principles": {
+      "professional": "Subtle, enterprise-appropriate interactions",
+      "functional": "Every animation serves a clear purpose",
+      "accessible": "Respects reduced-motion preferences",
+      "performant": "Optimized for business workflows"
+    },
+    "interaction_categories": {
+      "progress_animations": {
+        "description": "Job processing and data loading progress indicators",
+        "interactions": {
+          "linear_progress_bar": {
+            "trigger": "Job progress update",
+            "duration": "300ms",
+            "easing": "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+            "animation": {
+              "milestone_pulse": {
+                "trigger": "Progress reaches 25%, 50%, 75%",
+                "duration": "200ms",
+                "effect": "Subtle glow pulse around progress bar",
+                "color": "rgba(14, 165, 233, 0.3)",
+                "scale": "1.02x",
+                "implementation": "CSS box-shadow animation with scale transform"
+              },
+              "color_transition": {
+                "trigger": "Progress increases",
+                "duration": "500ms",
+                "effect": "Gradual color shift from blue-500 to green-500",
+                "implementation": "CSS background-color transition with gradient overlay"
+              },
+              "completion_bounce": {
+                "trigger": "Job completes (100%)",
+                "duration": "300ms",
+                "effect": "Micro bounce animation (2px amplitude)",
+                "easing": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                "implementation": "CSS transform: translateY(-2px) with spring easing"
+              },
+              "time_remaining_counter": {
+                "trigger": "Real-time progress updates",
+                "duration": "1000ms smooth countdown",
+                "effect": "Animated number transitions",
+                "implementation": "React Spring for smooth number interpolation"
+              }
+            },
+            "tailwind_classes": [
+              "transition-all duration-300 ease-out",
+              "bg-gradient-to-r from-blue-500 to-green-500",
+              "shadow-sm hover:shadow-md",
+              "transform hover:scale-102"
+            ],
+            "accessibility": {
+              "aria_label": "Job progress: X percent complete",
+              "screen_reader": "Progress updates announced",
+              "reduced_motion": "Static progress bar with text updates only"
+            }
+          }
+        }
+      },
+      "status_transitions": {
+        "description": "Job and system status change animations",
+        "interactions": {
+          "status_badge_transition": {
+            "trigger": "Status change (pending → running → completed/failed)",
+            "duration": "150ms",
+            "easing": "ease-out",
+            "animation": {
+              "fade_scale": {
+                "effect": "Fade out old status, scale in new status",
+                "implementation": "opacity: 0 → 1, transform: scale(0.9) → scale(1)",
+                "stagger": "50ms delay between fade out and scale in"
+              },
+              "running_pulse": {
+                "trigger": "Status changes to 'running'",
+                "duration": "2000ms",
+                "effect": "Single subtle glow pulse",
+                "color": "rgba(14, 165, 233, 0.4)",
+                "iterations": "1"
+              },
+              "checkmark_draw": {
+                "trigger": "Status changes to 'completed'",
+                "duration": "200ms",
+                "effect": "SVG checkmark path animation",
+                "implementation": "stroke-dasharray animation from 0 to 100%"
+              },
+              "error_shake": {
+                "trigger": "Status changes to 'failed'",
+                "duration": "400ms",
+                "effect": "Subtle horizontal shake (2px amplitude, 2 cycles)",
+                "implementation": "keyframe animation: translateX(0) → translateX(-2px) → translateX(2px) → translateX(0)"
+              }
+            },
+            "tailwind_classes": [
+              "transition-all duration-150 ease-out",
+              "transform-gpu",
+              "will-change-transform"
+            ],
+            "accessibility": {
+              "aria_live": "polite",
+              "status_announcement": "Status changed to [new status]",
+              "reduced_motion": "Instant status change without animation"
+            }
+          }
+        }
+      },
+      "interactive_elements": {
+        "description": "Hover and interaction feedback for cards, buttons, and links",
+        "interactions": {
+          "card_elevation": {
+            "trigger": "Mouse hover on account cards or status cards",
+            "duration": "150ms",
+            "easing": "ease-out",
+            "animation": {
+              "lift_effect": {
+                "transform": "translateY(-2px)",
+                "shadow": "0 8px 25px rgba(0, 0, 0, 0.15)",
+                "implementation": "CSS transform and box-shadow transition"
+              }
+            },
+            "tailwind_classes": [
+              "transition-all duration-150 ease-out",
+              "hover:transform hover:-translate-y-0.5",
+              "hover:shadow-lg"
+            ]
+          },
+          "button_interaction": {
+            "trigger": "Button hover and click",
+            "duration": "150ms",
+            "animation": {
+              "hover_darken": {
+                "effect": "Background color 10% darker",
+                "implementation": "CSS filter: brightness(0.9)"
+              },
+              "click_scale": {
+                "effect": "Brief scale down to 0.98x on click",
+                "duration": "100ms",
+                "implementation": "CSS transform: scale(0.98)"
+              }
+            },
+            "tailwind_classes": [
+              "transition-all duration-150",
+              "hover:brightness-90",
+              "active:scale-98"
+            ]
+          },
+          "table_row_highlight": {
+            "trigger": "Mouse hover on table rows",
+            "duration": "100ms",
+            "animation": {
+              "background_fade": {
+                "effect": "Soft background color fade to slate-50",
+                "implementation": "CSS background-color transition"
+              }
+            },
+            "tailwind_classes": [
+              "transition-colors duration-100",
+              "hover:bg-slate-50"
+            ]
+          },
+          "link_underline": {
+            "trigger": "Link hover",
+            "duration": "100ms",
+            "animation": {
+              "slide_in": {
+                "effect": "Underline slides in from left to right",
+                "implementation": "CSS pseudo-element with transform: scaleX(0) → scaleX(1)"
+              }
+            },
+            "tailwind_classes": [
+              "relative after:absolute after:bottom-0 after:left-0",
+              "after:h-0.5 after:w-full after:bg-blue-600",
+              "after:transform after:scale-x-0 after:transition-transform after:duration-100",
+              "hover:after:scale-x-100"
+            ]
+          }
+        }
+      },
+      "loading_states": {
+        "description": "Data loading and skeleton state animations",
+        "interactions": {
+          "skeleton_shimmer": {
+            "trigger": "Component loading state",
+            "duration": "2000ms",
+            "animation": {
+              "wave_effect": {
+                "effect": "Shimmer wave moving left to right",
+                "background": "linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)",
+                "background_size": "200% 100%",
+                "implementation": "CSS background-position animation"
+              }
+            },
+            "tailwind_classes": [
+              "animate-pulse bg-gradient-to-r from-slate-100 via-slate-200 to-slate-100",
+              "bg-size-200 animate-shimmer"
+            ],
+            "custom_css": "@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }"
+          },
+          "card_placeholder_pulse": {
+            "trigger": "Card loading state",
+            "duration": "1500ms",
+            "animation": {
+              "opacity_pulse": {
+                "effect": "Gentle opacity pulse between 0.5 and 1",
+                "implementation": "CSS opacity animation infinite alternate"
+              }
+            },
+            "tailwind_classes": [
+              "animate-pulse bg-slate-100 rounded-lg"
+            ]
+          },
+          "table_row_stagger": {
+            "trigger": "Table data loads",
+            "duration": "50ms delay per row",
+            "animation": {
+              "fade_in_up": {
+                "effect": "Rows fade in from bottom with 50ms stagger",
+                "implementation": "CSS opacity: 0 → 1, transform: translateY(10px) → translateY(0)"
+              }
+            },
+            "implementation_notes": "Use React Transition Group or Framer Motion for staggered animations"
+          },
+          "content_crossfade": {
+            "trigger": "Loading skeleton replaced with real content",
+            "duration": "200ms",
+            "animation": {
+              "smooth_replace": {
+                "effect": "Crossfade between skeleton and content",
+                "implementation": "CSS opacity transition with position: absolute overlay"
+              }
+            }
+          }
+        }
+      },
+      "success_feedback": {
+        "description": "Success and completion animations",
+        "interactions": {
+          "job_completion_celebration": {
+            "trigger": "Job status changes to 'completed'",
+            "duration": "800ms total",
+            "animation": {
+              "checkmark_reveal": {
+                "duration": "300ms",
+                "effect": "Green checkmark fades in with slight scale",
+                "implementation": "CSS opacity: 0 → 1, transform: scale(0.8) → scale(1)"
+              },
+              "professional_confetti": {
+                "duration": "500ms",
+                "effect": "3-5 small particles in enterprise colors",
+                "colors": ["#0ea5e9", "#22c55e", "#64748b"],
+                "particle_size": "4px",
+                "fall_distance": "20px",
+                "stagger": "100ms between particles",
+                "implementation": "CSS animations with absolute positioning"
+              },
+              "progress_bar_complete": {
+                "duration": "200ms",
+                "effect": "Final fill animation with ease-out",
+                "color_transition": "blue-500 → green-500"
+              }
+            },
+            "accessibility": {
+              "screen_reader": "Job completed successfully",
+              "reduced_motion": "Static checkmark with color change only"
+            }
+          },
+          "toast_notification": {
+            "trigger": "Success actions (file upload, export complete)",
+            "duration": "300ms enter, 4000ms display, 200ms exit",
+            "animation": {
+              "slide_in": {
+                "effect": "Slide in from top-right corner",
+                "implementation": "CSS transform: translateX(100%) → translateX(0)"
+              },
+              "auto_dismiss": {
+                "delay": "4000ms",
+                "effect": "Fade out with slight slide up",
+                "implementation": "CSS opacity: 1 → 0, transform: translateY(0) → translateY(-10px)"
+              }
+            },
+            "tailwind_classes": [
+              "transform transition-all duration-300",
+              "translate-x-full data-[state=open]:translate-x-0",
+              "opacity-0 data-[state=open]:opacity-100"
+            ]
+          }
+        }
+      },
+      "file_upload_interactions": {
+        "description": "File upload and drag-and-drop feedback",
+        "interactions": {
+          "drag_over_feedback": {
+            "trigger": "File dragged over drop zone",
+            "duration": "150ms",
+            "animation": {
+              "border_pulse": {
+                "effect": "Border color change to blue with subtle pulse",
+                "border_color": "border-blue-500",
+                "pulse_effect": "2px border width increase",
+                "implementation": "CSS border-color and border-width transition"
+              },
+              "scale_highlight": {
+                "effect": "Subtle scale increase (1.02x)",
+                "implementation": "CSS transform: scale(1.02)"
+              }
+            },
+            "tailwind_classes": [
+              "transition-all duration-150",
+              "data-[drag-over=true]:border-blue-500 data-[drag-over=true]:scale-102",
+              "data-[drag-over=true]:bg-blue-50"
+            ]
+          },
+          "drop_ripple": {
+            "trigger": "File dropped into zone",
+            "duration": "600ms",
+            "animation": {
+              "ripple_effect": {
+                "effect": "Circular ripple from drop point",
+                "implementation": "CSS radial animation expanding from mouse position",
+                "color": "rgba(14, 165, 233, 0.3)"
+              }
+            }
+          },
+          "upload_progress_circular": {
+            "trigger": "Individual file upload",
+            "duration": "Based on upload time",
+            "animation": {
+              "circular_progress": {
+                "effect": "SVG circle stroke animation with percentage",
+                "implementation": "stroke-dasharray animation based on progress"
+              },
+              "file_icon_overlay": {
+                "effect": "Checkmark overlay on completion",
+                "duration": "200ms fade in"
+              }
+            }
+          }
+        }
+      },
+      "real_time_indicators": {
+        "description": "Live data and connection status indicators",
+        "interactions": {
+          "live_data_pulse": {
+            "trigger": "Real-time data updates",
+            "duration": "2000ms cycle",
+            "animation": {
+              "breathing_dot": {
+                "effect": "Subtle opacity pulse (0.5 → 1 → 0.5)",
+                "color": "#22c55e",
+                "size": "6px",
+                "implementation": "CSS opacity animation infinite alternate"
+              }
+            },
+            "tailwind_classes": [
+              "w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"
+            ]
+          },
+          "new_data_highlight": {
+            "trigger": "New data appears",
+            "duration": "1000ms",
+            "animation": {
+              "flash_highlight": {
+                "effect": "Quick yellow background flash",
+                "background": "rgba(251, 191, 36, 0.3)",
+                "implementation": "CSS background-color animation: transparent → yellow → transparent"
+              }
+            },
+            "tailwind_classes": [
+              "animate-flash-yellow"
+            ],
+            "custom_css": "@keyframes flash-yellow { 0%, 100% { background-color: transparent; } 50% { background-color: rgba(251, 191, 36, 0.3); } }"
+          },
+          "counter_animation": {
+            "trigger": "Metric numbers change",
+            "duration": "300ms",
+            "animation": {
+              "number_roll": {
+                "effect": "Smooth number transitions",
+                "implementation": "React Spring useSpring for number interpolation"
+              }
+            }
+          },
+          "connection_status_glow": {
+            "trigger": "Connection status indicator",
+            "duration": "1500ms cycle",
+            "animation": {
+              "healthy_glow": {
+                "effect": "Subtle green glow for healthy connection",
+                "color": "rgba(34, 197, 94, 0.4)",
+                "implementation": "CSS box-shadow animation"
+              },
+              "warning_pulse": {
+                "effect": "Amber pulse for connection issues",
+                "color": "rgba(245, 158, 11, 0.6)",
+                "frequency": "Faster pulse (1000ms cycle)"
+              }
+            }
+          }
+        }
+      },
+      "chat_interface_enhancements": {
+        "description": "AI chat interaction micro-animations",
+        "interactions": {
+          "typing_indicator": {
+            "trigger": "AI response generating",
+            "duration": "1200ms infinite",
+            "animation": {
+              "three_dots_bounce": {
+                "effect": "Three dots with staggered bounce",
+                "dot_size": "4px",
+                "bounce_height": "2px",
+                "stagger_delay": "200ms",
+                "implementation": "CSS keyframe animation with animation-delay"
+              }
+            },
+            "tailwind_classes": [
+              "flex space-x-1",
+              "animate-bounce [&>*:nth-child(2)]:animation-delay-200",
+              "[&>*:nth-child(3)]:animation-delay-400"
+            ]
+          },
+          "message_appear": {
+            "trigger": "New message in chat",
+            "duration": "200ms",
+            "animation": {
+              "slide_up_fade": {
+                "effect": "Message slides up from bottom with fade",
+                "implementation": "CSS transform: translateY(20px) → translateY(0), opacity: 0 → 1"
+              }
+            },
+            "tailwind_classes": [
+              "animate-slide-up-fade"
+            ],
+            "custom_css": "@keyframes slide-up-fade { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }"
+          },
+          "streaming_text": {
+            "trigger": "AI response streaming",
+            "duration": "Real-time",
+            "animation": {
+              "cursor_blink": {
+                "effect": "Blinking cursor at end of streaming text",
+                "implementation": "CSS animation: opacity 1 → 0 → 1 (1000ms cycle)"
+              }
+            }
+          },
+          "context_switch": {
+            "trigger": "Account context changes",
+            "duration": "250ms",
+            "animation": {
+              "smooth_transition": {
+                "effect": "Fade out old context, slide in new context",
+                "implementation": "CSS opacity and transform transitions"
+              }
+            }
+          }
+        }
+      }
+    },
+    "accessibility_considerations": {
+      "reduced_motion_support": {
+        "media_query": "@media (prefers-reduced-motion: reduce)",
+        "fallback_behavior": {
+          "animations": "Instant state changes or very short durations (50ms)",
+          "progress_indicators": "Text-based updates only",
+          "loading_states": "Static placeholders",
+          "success_feedback": "Color changes without motion"
+        }
+      },
+      "screen_reader_support": {
+        "live_regions": "aria-live='polite' for status updates",
+        "progress_announcements": "Progress percentage announced at 25% intervals",
+        "completion_feedback": "Clear completion messages"
+      },
+      "keyboard_navigation": {
+        "focus_indicators": "2px blue ring with 2px offset",
+        "focus_animations": "Smooth focus ring appearance (150ms)",
+        "skip_animations": "Tab navigation bypasses decorative animations"
+      }
+    },
+    "performance_guidelines": {
+      "css_optimizations": {
+        "gpu_acceleration": "Use transform3d() and will-change properties",
+        "composite_layers": "Isolate animated elements with transform: translateZ(0)",
+        "efficient_properties": "Prefer transform and opacity over layout-affecting properties"
+      },
+      "javascript_optimizations": {
+        "request_animation_frame": "Use RAF for smooth animations",
+        "debounced_events": "Debounce hover and scroll events",
+        "intersection_observer": "Use for scroll-triggered animations"
+      },
+      "bundle_size": {
+        "css_animations": "Prefer CSS over JavaScript animations",
+        "conditional_loading": "Load heavy animations only when needed",
+        "tree_shaking": "Import only required animation utilities"
+      }
+    },
+    "implementation_framework": {
+      "css_approach": {
+        "tailwind_utilities": "Use Tailwind transition and animation classes",
+        "custom_keyframes": "Define in globals.css for complex animations",
+        "css_variables": "Use for dynamic timing and easing values"
+      },
+      "react_integration": {
+        "state_driven": "Animations triggered by React state changes",
+        "conditional_classes": "Use clsx/cn for conditional animation classes",
+        "cleanup": "Proper cleanup of intervals and timeouts"
+      },
+      "library_recommendations": {
+        "minimal_footprint": "Prefer CSS animations over heavy libraries",
+        "react_spring": "For complex spring animations and number interpolation",
+        "framer_motion": "Only for complex orchestrated sequences"
+      }
+    },
+    "testing_considerations": {
+      "visual_regression": "Test all animation states in Storybook",
+      "performance_testing": "Monitor FPS during animations",
+      "accessibility_testing": "Verify reduced-motion compliance",
+      "cross_browser": "Test easing functions across browsers"
+    }
+  }
+}

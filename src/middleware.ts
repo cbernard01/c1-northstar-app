@@ -1,7 +1,6 @@
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-import { auth } from "@/app/(auth)/auth";
+import { auth } from "@/lib/auth";
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const session = await auth();
@@ -17,6 +16,12 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 export const config = {
   matcher: [
     "/dashboard/:path*",
+    "/accounts/:path*",
+    "/insights/:path*",
+    "/jobs/:path*",
+    "/upload/:path*",
+    "/reports/:path*",
+    "/chat/:path*",
     "/settings/:path*",
     "/admin/:path*",
   ],

@@ -53,7 +53,192 @@
   * {
     @apply border-border;
   }
+  
+  html {
+    @apply scroll-smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Typography styles matching design system */
+  .text-display {
+    @apply text-5xl font-bold leading-tight tracking-tight;
+  }
+  
+  .text-h1 {
+    @apply text-4xl font-semibold leading-tight tracking-tight;
+  }
+  
+  .text-h2 {
+    @apply text-3xl font-semibold leading-tight tracking-tight;
+  }
+  
+  .text-h3 {
+    @apply text-xl font-semibold leading-normal tracking-tight;
+  }
+  
+  .text-h4 {
+    @apply text-lg font-semibold leading-normal;
+  }
+  
+  .text-body-large {
+    @apply text-lg leading-relaxed;
+  }
+  
+  .text-body {
+    @apply text-base leading-normal;
+  }
+  
+  .text-body-small {
+    @apply text-sm leading-normal;
+  }
+  
+  .text-caption {
+    @apply text-xs leading-normal tracking-wide;
+  }
+  
+  .text-code {
+    @apply text-sm font-mono leading-normal;
+  }
+}
+
+@layer components {
+  /* Sidebar specific styles */
+  .sidebar-backdrop {
+    backdrop-filter: blur(4px);
+  }
+  
+  /* Status indicators */
+  .status-dot {
+    @apply w-2 h-2 rounded-full;
+  }
+  
+  .status-running {
+    @apply bg-primary-500;
+  }
+  
+  .status-completed {
+    @apply bg-success-500;
+  }
+  
+  .status-failed {
+    @apply bg-error-500;
+  }
+  
+  .status-pending {
+    @apply bg-warning-500;
+  }
+  
+  .status-queued {
+    @apply bg-secondary-500;
+  }
+  
+  /* Confidence badges */
+  .confidence-high {
+    @apply bg-success-100 text-success-800 border-success-200;
+  }
+  
+  .confidence-medium {
+    @apply bg-warning-100 text-warning-800 border-warning-200;
+  }
+  
+  .confidence-low {
+    @apply bg-error-100 text-error-800 border-error-200;
+  }
+  
+  /* Loading skeleton */
+  .skeleton {
+    @apply animate-pulse bg-muted rounded;
+  }
+  
+  .skeleton-shimmer {
+    @apply bg-gradient-to-r from-muted via-muted-foreground/10 to-muted bg-200 animate-shimmer;
+  }
+  
+  /* Focus states */
+  .focus-ring {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+  
+  /* Transitions */
+  .transition-colors-fast {
+    @apply transition-colors duration-150 ease-out;
+  }
+  
+  .transition-all-fast {
+    @apply transition-all duration-150 ease-out;
+  }
+  
+  .transition-transform-fast {
+    @apply transition-transform duration-150 ease-out;
+  }
+}
+
+@layer utilities {
+  /* Custom scrollbar styles */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) hsl(var(--muted));
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--foreground));
+  }
+  
+  /* Animation delays for staggered effects */
+  .animate-delay-75 {
+    animation-delay: 75ms;
+  }
+  
+  .animate-delay-100 {
+    animation-delay: 100ms;
+  }
+  
+  .animate-delay-150 {
+    animation-delay: 150ms;
+  }
+  
+  .animate-delay-200 {
+    animation-delay: 200ms;
+  }
+  
+  .animate-delay-300 {
+    animation-delay: 300ms;
+  }
+  
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-pulse,
+    .animate-bounce,
+    .animate-spin,
+    .animate-shimmer {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      opacity: 0.8;
+    }
+    
+    .transition-all,
+    .transition-colors,
+    .transition-transform {
+      transition-duration: 0.01ms !important;
+    }
   }
 }

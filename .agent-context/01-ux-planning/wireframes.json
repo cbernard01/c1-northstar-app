@@ -1,0 +1,266 @@
+{
+  "wireframe_specifications": {
+    "grid_system": {
+      "total_width": 1440,
+      "columns": 12,
+      "column_width": 96,
+      "gutter": 24,
+      "margin": 48
+    },
+    "global_components": {
+      "header": {
+        "position": { "x": 0, "y": 0, "width": 1440, "height": 64 },
+        "elements": {
+          "logo": { "x": 48, "y": 16, "width": 200, "height": 32 },
+          "nav_primary": { "x": 300, "y": 16, "width": 600, "height": 32 },
+          "user_profile": { "x": 1296, "y": 16, "width": 96, "height": 32 }
+        }
+      },
+      "sidebar": {
+        "position": { "x": 0, "y": 64, "width": 256, "height": "calc(100vh - 64px)" },
+        "elements": {
+          "nav_menu": { "x": 24, "y": 24, "width": 208, "height": "auto" }
+        }
+      },
+      "main_content": {
+        "position": { "x": 256, "y": 64, "width": 1184, "height": "calc(100vh - 64px)" }
+      }
+    },
+    "pages": {
+      "dashboard": {
+        "title": "Dashboard - Job Status and Quick Actions",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "page_header": { "x": 304, "y": 128, "width": 1088, "height": 48 },
+          "quick_actions": { "x": 304, "y": 192, "width": 1088, "height": 120 },
+          "job_status_grid": { "x": 304, "y": 336, "width": 1088, "height": 400 },
+          "recent_activity": { "x": 304, "y": 760, "width": 1088, "height": 300 }
+        },
+        "components": {
+          "quick_actions": {
+            "upload_button": { "x": 304, "y": 216, "width": 256, "height": 72 },
+            "new_job_button": { "x": 584, "y": 216, "width": 256, "height": 72 },
+            "explore_accounts": { "x": 864, "y": 216, "width": 256, "height": 72 },
+            "view_results": { "x": 1144, "y": 216, "width": 248, "height": 72 }
+          },
+          "job_status_cards": {
+            "card_1": { "x": 304, "y": 336, "width": 352, "height": 180 },
+            "card_2": { "x": 680, "y": 336, "width": 352, "height": 180 },
+            "card_3": { "x": 1056, "y": 336, "width": 336, "height": 180 },
+            "card_4": { "x": 304, "y": 540, "width": 352, "height": 180 },
+            "card_5": { "x": 680, "y": 540, "width": 352, "height": 180 },
+            "card_6": { "x": 1056, "y": 540, "width": 336, "height": 180 }
+          },
+          "recent_activity_list": { "x": 304, "y": 784, "width": 1088, "height": 252 }
+        }
+      },
+      "import": {
+        "title": "File Import - Upload and Validation",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "page_header": { "x": 304, "y": 128, "width": 1088, "height": 48 },
+          "import_type_selector": { "x": 304, "y": 192, "width": 1088, "height": 56 },
+          "upload_zone": { "x": 304, "y": 272, "width": 1088, "height": 320 },
+          "validation_feedback": { "x": 304, "y": 616, "width": 1088, "height": 200 },
+          "import_history": { "x": 304, "y": 840, "width": 1088, "height": 300 }
+        },
+        "components": {
+          "import_type_tabs": {
+            "accounts_tab": { "x": 304, "y": 192, "width": 272, "height": 56 },
+            "products_tab": { "x": 576, "y": 192, "width": 272, "height": 56 },
+            "assets_tab": { "x": 848, "y": 192, "width": 272, "height": 56 },
+            "opportunities_tab": { "x": 1120, "y": 192, "width": 272, "height": 56 }
+          },
+          "drag_drop_zone": { "x": 328, "y": 296, "width": 1040, "height": 272 },
+          "file_list": { "x": 328, "y": 592, "width": 520, "height": 200 },
+          "validation_panel": { "x": 872, "y": 592, "width": 496, "height": 200 }
+        }
+      },
+      "jobs": {
+        "title": "Job Queue - Monitoring and Management",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "page_header": { "x": 304, "y": 128, "width": 816, "height": 48 },
+          "create_job_button": { "x": 1144, "y": 128, "width": 248, "height": 48 },
+          "filter_controls": { "x": 304, "y": 192, "width": 1088, "height": 56 },
+          "jobs_table": { "x": 304, "y": 272, "width": 1088, "height": 600 },
+          "pagination": { "x": 304, "y": 896, "width": 1088, "height": 48 }
+        },
+        "components": {
+          "job_filters": {
+            "status_filter": { "x": 304, "y": 200, "width": 200, "height": 40 },
+            "type_filter": { "x": 528, "y": 200, "width": 200, "height": 40 },
+            "date_filter": { "x": 752, "y": 200, "width": 200, "height": 40 },
+            "search_input": { "x": 976, "y": 200, "width": 416, "height": 40 }
+          },
+          "jobs_table_columns": {
+            "status_col": { "x": 304, "y": 272, "width": 120, "height": 600 },
+            "type_col": { "x": 424, "y": 272, "width": 150, "height": 600 },
+            "progress_col": { "x": 574, "y": 272, "width": 200, "height": 600 },
+            "created_col": { "x": 774, "y": 272, "width": 150, "height": 600 },
+            "duration_col": { "x": 924, "y": 272, "width": 120, "height": 600 },
+            "actions_col": { "x": 1044, "y": 272, "width": 348, "height": 600 }
+          }
+        }
+      },
+      "accounts": {
+        "title": "Account Explorer - Search and Browse",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "page_header": { "x": 304, "y": 128, "width": 1088, "height": 48 },
+          "search_controls": { "x": 304, "y": 192, "width": 1088, "height": 56 },
+          "filter_sidebar": { "x": 304, "y": 272, "width": 256, "height": 600 },
+          "accounts_grid": { "x": 584, "y": 272, "width": 808, "height": 600 },
+          "pagination": { "x": 584, "y": 896, "width": 808, "height": 48 }
+        },
+        "components": {
+          "search_bar": { "x": 304, "y": 200, "width": 600, "height": 40 },
+          "view_toggles": { "x": 928, "y": 200, "width": 200, "height": 40 },
+          "export_button": { "x": 1152, "y": 200, "width": 240, "height": 40 },
+          "filter_panels": {
+            "industry_filter": { "x": 304, "y": 272, "width": 256, "height": 120 },
+            "size_filter": { "x": 304, "y": 416, "width": 256, "height": 120 },
+            "tech_filter": { "x": 304, "y": 560, "width": 256, "height": 120 },
+            "status_filter": { "x": 304, "y": 704, "width": 256, "height": 120 }
+          },
+          "account_cards": {
+            "card_grid": { "x": 584, "y": 272, "width": 808, "height": 600 },
+            "card_size": { "width": 392, "height": 180 }
+          }
+        }
+      },
+      "account_detail": {
+        "title": "Account Detail - Technology Stack and Insights",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "account_header": { "x": 304, "y": 128, "width": 1088, "height": 80 },
+          "tab_navigation": { "x": 304, "y": 232, "width": 1088, "height": 48 },
+          "content_area": { "x": 304, "y": 304, "width": 1088, "height": 640 },
+          "action_buttons": { "x": 304, "y": 968, "width": 1088, "height": 48 }
+        },
+        "components": {
+          "account_info": { "x": 304, "y": 128, "width": 600, "height": 80 },
+          "status_indicators": { "x": 928, "y": 128, "width": 464, "height": 80 },
+          "detail_tabs": {
+            "overview_tab": { "x": 304, "y": 232, "width": 180, "height": 48 },
+            "tech_stack_tab": { "x": 484, "y": 232, "width": 180, "height": 48 },
+            "opportunities_tab": { "x": 664, "y": 232, "width": 180, "height": 48 },
+            "insights_tab": { "x": 844, "y": 232, "width": 180, "height": 48 },
+            "timeline_tab": { "x": 1024, "y": 232, "width": 180, "height": 48 }
+          },
+          "tab_content": { "x": 304, "y": 304, "width": 1088, "height": 640 }
+        }
+      },
+      "results": {
+        "title": "Results Viewer - AI Insights and Export",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "page_header": { "x": 304, "y": 128, "width": 816, "height": 48 },
+          "export_controls": { "x": 1144, "y": 128, "width": 248, "height": 48 },
+          "insight_categories": { "x": 304, "y": 192, "width": 1088, "height": 56 },
+          "insights_grid": { "x": 304, "y": 272, "width": 1088, "height": 640 },
+          "pagination": { "x": 304, "y": 936, "width": 1088, "height": 48 }
+        },
+        "components": {
+          "category_tabs": {
+            "ecosystem_tab": { "x": 304, "y": 192, "width": 272, "height": 56 },
+            "value_tab": { "x": 576, "y": 192, "width": 272, "height": 56 },
+            "interests_tab": { "x": 848, "y": 192, "width": 272, "height": 56 },
+            "next_steps_tab": { "x": 1120, "y": 192, "width": 272, "height": 56 }
+          },
+          "insight_cards": {
+            "card_1": { "x": 304, "y": 272, "width": 352, "height": 200 },
+            "card_2": { "x": 680, "y": 272, "width": 352, "height": 200 },
+            "card_3": { "x": 1056, "y": 272, "width": 336, "height": 200 },
+            "card_4": { "x": 304, "y": 496, "width": 352, "height": 200 },
+            "card_5": { "x": 680, "y": 496, "width": 352, "height": 200 },
+            "card_6": { "x": 1056, "y": 496, "width": 336, "height": 200 },
+            "card_7": { "x": 304, "y": 720, "width": 352, "height": 192 },
+            "card_8": { "x": 680, "y": 720, "width": 352, "height": 192 },
+            "card_9": { "x": 1056, "y": 720, "width": 336, "height": 192 }
+          },
+          "confidence_indicators": { "width": 60, "height": 20, "position": "top-right of each card" },
+          "evidence_links": { "width": 100, "height": 24, "position": "bottom-left of each card" }
+        }
+      },
+      "chat": {
+        "title": "AI Chat - Contextual Account Intelligence",
+        "layout": {
+          "breadcrumb": { "x": 304, "y": 88, "width": 1088, "height": 24 },
+          "chat_header": { "x": 304, "y": 128, "width": 1088, "height": 48 },
+          "context_selector": { "x": 304, "y": 192, "width": 1088, "height": 56 },
+          "chat_messages": { "x": 304, "y": 272, "width": 1088, "height": 560 },
+          "chat_input": { "x": 304, "y": 856, "width": 1088, "height": 80 }
+        },
+        "components": {
+          "account_context": { "x": 304, "y": 200, "width": 400, "height": 40 },
+          "chat_controls": { "x": 928, "y": 200, "width": 464, "height": 40 },
+          "message_area": { "x": 328, "y": 296, "width": 1040, "height": 536 },
+          "input_area": {
+            "text_input": { "x": 328, "y": 872, "width": 944, "height": 48 },
+            "send_button": { "x": 1296, "y": 872, "width": 72, "height": 48 }
+          },
+          "message_components": {
+            "user_message": { "width": 600, "height": "auto", "align": "right" },
+            "ai_message": { "width": 800, "height": "auto", "align": "left" },
+            "source_attribution": { "width": 200, "height": 24, "position": "below ai messages" }
+          }
+        }
+      }
+    },
+    "responsive_breakpoints": {
+      "desktop": { "min_width": 1200, "grid_columns": 12 },
+      "tablet": { "min_width": 768, "max_width": 1199, "grid_columns": 8 },
+      "mobile": { "max_width": 767, "grid_columns": 4 }
+    },
+    "component_specifications": {
+      "buttons": {
+        "primary": { "height": 48, "min_width": 120, "border_radius": 6 },
+        "secondary": { "height": 40, "min_width": 100, "border_radius": 6 },
+        "small": { "height": 32, "min_width": 80, "border_radius": 4 }
+      },
+      "form_controls": {
+        "input": { "height": 40, "border_radius": 4, "padding": "8px 12px" },
+        "select": { "height": 40, "border_radius": 4, "min_width": 120 },
+        "textarea": { "min_height": 80, "border_radius": 4, "padding": "8px 12px" }
+      },
+      "cards": {
+        "default": { "border_radius": 8, "padding": 24, "shadow": "0 2px 8px rgba(0,0,0,0.1)" },
+        "compact": { "border_radius": 6, "padding": 16, "shadow": "0 1px 4px rgba(0,0,0,0.1)" }
+      },
+      "tables": {
+        "row_height": 48,
+        "header_height": 56,
+        "cell_padding": "12px 16px"
+      },
+      "progress_bars": {
+        "height": 8,
+        "border_radius": 4,
+        "background": "#f0f0f0",
+        "fill": "#007bff"
+      }
+    },
+    "interaction_patterns": {
+      "drag_and_drop": {
+        "drop_zone_min_height": 200,
+        "visual_feedback": "border_color_change",
+        "hover_state": "background_highlight"
+      },
+      "real_time_updates": {
+        "progress_animation": "smooth_transition",
+        "status_indicators": "color_coded",
+        "update_frequency": "1_second"
+      },
+      "pagination": {
+        "items_per_page": [25, 50, 100],
+        "page_controls": "first_prev_next_last",
+        "page_info": "showing_x_of_y"
+      },
+      "search_and_filter": {
+        "search_debounce": "300ms",
+        "filter_application": "immediate",
+        "clear_filters": "single_click"
+      }
+    }
+  }
+}

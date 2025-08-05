@@ -20,21 +20,24 @@ A modern Next.js application with Microsoft Entra ID authentication, built for e
 ## Getting Started
 
 1. **Clone and install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Set up environment variables:**
+
    ```bash
    cp .env.example .env
    ```
-   
+
    Update `.env` with your values:
    - Database connection string
    - NextAuth configuration
    - Microsoft Entra ID credentials
 
 3. **Set up the database:**
+
    ```bash
    npm run db:push
    # or for migrations
@@ -42,6 +45,7 @@ A modern Next.js application with Microsoft Entra ID authentication, built for e
    ```
 
 4. **Run the development server:**
+
    ```bash
    npm run dev
    ```
@@ -61,6 +65,7 @@ A modern Next.js application with Microsoft Entra ID authentication, built for e
 ## Docker Deployment
 
 1. **Build and run with Docker Compose:**
+
    ```bash
    docker-compose up --build
    ```

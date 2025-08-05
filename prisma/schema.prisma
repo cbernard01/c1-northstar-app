@@ -21,6 +21,16 @@ model User {
   sessions      Session[]
   oid           String?         @unique // Microsoft Entra ID Object ID
   
+  // Business relations
+  jobs          Job[]
+  uploads       Upload[]
+  chatSessions  ChatSession[]
+  processingJobs ProcessingJob[]
+  documents     Document[]
+  
+  // User preferences and settings
+  preferences   Json?  // Store UI preferences, LLM settings
+  
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
 
@@ -65,4 +75,551 @@ model VerificationToken {
   expires    DateTime
 
   @@id([identifier, token])
+}
+
+// Business models for C1 Northstar
+model Job {
+  id          String    @id @default(cuid())
+  type        JobType
+  title       String
+  description String?
+  status      JobStatus @default(QUEUED)
+  progress    Int       @default(0) // 0-100
+  metadata    Json?
+  result      Json?
+  errorMessage String?
+  
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  startedAt   DateTime?
+  completedAt DateTime?
+  failedAt    DateTime?
+  
+  // Relations
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  uploads     Upload[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// Enhanced processing job model for detailed tracking
+model ProcessingJob {
+  id            String      @id @default(cuid())
+  type          ProcessingJobType
+  title         String
+  description   String?
+  status        JobStatus   @default(QUEUED)
+  progress      Int         @default(0) // 0-100
+  totalItems    Int?        @default(0)
+  processedItems Int?       @default(0)
+  failedItems   Int?        @default(0)
+  metadata      Json?
+  result        Json?
+  errorMessage  String?
+  
+  // Processing stages
+  stages        ProcessingStage[]
+  
+  // Timestamps
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  startedAt     DateTime?
+  completedAt   DateTime?
+  failedAt      DateTime?
+  
+  // Relations
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  documents     Document[]  // Associated documents
+  
+  @@index([userId])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+// Processing stage tracking for granular progress
+model ProcessingStage {
+  id          String        @id @default(cuid())
+  name        String        // "parsing", "normalization", "vectorization", etc.
+  status      JobStatus     @default(QUEUED)
+  progress    Int           @default(0)
+  startedAt   DateTime?
+  completedAt DateTime?
+  errorMessage String?
+  
+  // Relations
+  jobId       String
+  job         ProcessingJob @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  
+  @@index([jobId])
+  @@index([status])
+}
+
+// Enhanced company account model with normalized fields
+model CompanyAccount {
+  id          String   @id @default(cuid())
+  name        String
+  accountNumber String? @unique  // Unique identifier from source systems
+  domain      String?  @unique
+  industry    String?
+  size        String?  // "startup", "small", "medium", "large", "enterprise"
+  location    String?
+  description String?
+  website     String?
+  
+  // Normalized summary fields for vector search
+  normalizedSummary          String?   @db.Text
+  normalizedSummaryCreatedAt DateTime?
+  
+  // Additional RSF fields
+  gemStatus                  String?
+  gemIndex                   String?
+  crmOwner                   String?
+  targetSolutions            String?
+  battleCardNotes            String?   @db.Text
+  competitorResearch         String?   @db.Text
+  recommendedSolution        String?
+  
+  // Intent and vendor tracking
+  ccIntent                   String?  // Contact Center intent
+  ccVendor                   String?
+  ucIntent                   String?  // Unified Communications intent  
+  ucVendor                   String?
+  dcIntent                   String?  // Data Center intent
+  dcVendor                   String?
+  enIntent                   String?  // Enterprise Networking intent
+  enVendor                   String?
+  sxIntent                   String?  // Software intent
+  sxVendor                   String?
+  
+  // Customer segments and categorization
+  finalCustomerSegment       String?
+  ceCustomerSegment          String?
+  programCategory            String?
+  
+  metadata    Json?
+  
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  technologies Technology[]
+  contacts     Contact[]
+  insights     Insight[]
+  opportunities Opportunity[]
+  vectorChunks  VectorChunk[]
+  
+  @@index([domain])
+  @@index([industry])
+  @@index([size])
+  @@index([location])
+  @@index([name])
+  @@index([accountNumber])
+  @@index([gemStatus])
+  @@index([normalizedSummaryCreatedAt])
+}
+
+// Product catalog model from RSF
+model Product {
+  id                       String    @id @default(cuid())
+  itemNumber               String    @unique
+  itemDescription          String?   @db.Text
+  itemTypeCode             Int?
+  itemTypeDescription      String?
+  productType              String?
+  itemRevenueCategory      String?
+  itemManufacturer         String?
+  itemCategory             String?
+  itemLineOfBusiness       String?
+  itemSubcategory          String?
+  itemClass                String?
+  portfolio                String?
+  currentCost              Float?
+  
+  // SCD (Slowly Changing Dimension) fields
+  scdStartDate             DateTime?
+  scdEndDate               DateTime?
+  isCurrentRecordFlag      Boolean   @default(true)
+  
+  // Business categorization
+  offer                    String?
+  practice                 String?
+  solutionSegment          String?
+  businessSegment          String?
+  manufacturerPractice     String?
+  manufacturerItemCategory String?
+  growthCategory           String?
+  
+  // Timestamps
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+  
+  // Relations
+  purchaseProducts         PurchaseProduct[]
+  
+  @@index([itemNumber])
+  @@index([itemManufacturer])
+  @@index([itemCategory])
+  @@index([solutionSegment])
+  @@index([isCurrentRecordFlag])
+}
+
+// Sales opportunities model
+model Opportunity {
+  id                   String    @id @default(cuid())
+  opportunityNumber    String    @unique
+  customerName         String
+  oppStage             String?
+  salesPerson          String?
+  salesDirector        String?
+  
+  // Revenue tracking
+  bookedGrossRevenue   Float     @default(0.0)
+  pipelineGrossRevenue Float     @default(0.0)
+  margin               Float     @default(0.0)
+  
+  // Dates
+  bookedDate           DateTime?
+  estimatedCloseDate   DateTime?
+  
+  // Timestamps
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  
+  // Relations
+  accountId            String
+  account              CompanyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  purchaseProducts     PurchaseProduct[]
+  
+  @@index([opportunityNumber])
+  @@index([accountId])
+  @@index([oppStage])
+  @@index([salesPerson])
+  @@index([estimatedCloseDate])
+}
+
+// Many-to-many relationship between opportunities and products
+model PurchaseProduct {
+  id                 String      @id @default(cuid())
+  
+  // Revenue categorization
+  gpRevenueCategory  String?
+  mappedSolutionArea String?
+  mappedSegment      String?
+  mappedCapability   String?
+  itemCategory       String?
+  
+  // Relations
+  opportunityId      String
+  opportunity        Opportunity @relation(fields: [opportunityId], references: [id], onDelete: Cascade)
+  productId          String
+  product            Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  // Timestamps
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+  
+  @@index([opportunityId])
+  @@index([productId])
+  @@unique([opportunityId, productId])
+}
+
+// Document tracking for processed files
+model Document {
+  id                String        @id @default(cuid())
+  fileName          String
+  originalName      String
+  filePath          String?       // Path to stored file
+  fileSize          Int
+  fileType          String        // "csv", "pdf", "pptx", "docx", "xlsx"
+  mimeType          String?
+  
+  // Processing status
+  status            DocumentStatus @default(UPLOADED)
+  processingStage   String?       // "parsing", "chunking", "vectorizing"
+  
+  // Content metadata
+  totalPages        Int?
+  totalBlocks       Int?          // Number of parsed blocks
+  totalChunks       Int?          // Number of generated chunks
+  
+  // Parsed content summary
+  title             String?
+  category          String?       // "Case Study", "Data Sheet", etc.
+  scope             DocumentScope @default(GENERAL)
+  
+  // Processing results
+  errorMessage      String?
+  processingTime    Int?          // milliseconds
+  
+  // Timestamps
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  uploadedAt        DateTime      @default(now())
+  processedAt       DateTime?
+  
+  // Relations
+  userId            String
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  processingJobId   String?
+  processingJob     ProcessingJob? @relation(fields: [processingJobId], references: [id], onDelete: SetNull)
+  vectorChunks      VectorChunk[]
+  
+  @@index([userId])
+  @@index([status])
+  @@index([fileType])
+  @@index([scope])
+  @@index([processedAt])
+}
+
+// Vector chunk model for tracking embeddings
+model VectorChunk {
+  id              String      @id @default(cuid())
+  
+  // Content
+  content         String      @db.Text
+  contentHash     String      @unique  // SHA-256 hash for deduplication
+  chunkIndex      Int         // Position within source document
+  tokenCount      Int         @default(0)
+  
+  // Vector metadata
+  qdrantPointId   String?     @unique  // Reference to Qdrant point ID
+  embeddingModel  String?     // Model used for embedding
+  vectorScope     String      @default("general") // "sales-assets", "account-summary", etc.
+  sourceType      String      @default("document") // "account-summary", "document", "global-context"
+  
+  // Source references
+  sourceSection   String?     // Section/slide number
+  slideNumber     Int?
+  originalText    String?     @db.Text
+  
+  // Search metadata
+  tags            String[]    @default([])
+  metadata        Json?
+  
+  // Timestamps
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+  
+  // Relations - flexible source references
+  documentId      String?
+  document        Document?   @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  accountId       String?
+  account         CompanyAccount? @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@index([contentHash])
+  @@index([vectorScope])
+  @@index([sourceType])
+  @@index([documentId])
+  @@index([accountId])
+  @@index([qdrantPointId])
+}
+
+model Technology {
+  id         String  @id @default(cuid())
+  name       String
+  category   String  // "frontend", "backend", "database", "cloud", etc.
+  version    String?
+  confidence Float   @default(0.0) // 0.0-1.0
+  source     String  // "website", "job_posting", "document", "manual"
+  metadata   Json?
+  
+  // Timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  accountId  String
+  account    CompanyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@index([accountId])
+  @@index([category])
+  @@index([name])
+}
+
+model Contact {
+  id         String  @id @default(cuid())
+  name       String
+  email      String?
+  title      String?
+  department String?
+  linkedIn   String?
+  metadata   Json?
+  
+  // Timestamps
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  // Relations
+  accountId  String
+  account    CompanyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@index([accountId])
+  @@index([email])
+}
+
+model Insight {
+  id           String   @id @default(cuid())
+  type         String   // "technology_gap", "hiring_pattern", "market_opportunity", etc.
+  title        String
+  description  String
+  confidence   Float    @default(0.0) // 0.0-1.0
+  category     String   // "technical", "business", "competitive", etc.
+  tags         String[] @default([])
+  isBookmarked Boolean  @default(false)
+  metadata     Json?
+  
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // Relations
+  accountId    String
+  account      CompanyAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  @@index([accountId])
+  @@index([type])
+  @@index([category])
+  @@index([confidence])
+  @@index([isBookmarked])
+}
+
+model Upload {
+  id             String      @id @default(cuid())
+  fileName       String
+  originalName   String
+  fileSize       Int
+  fileType       String
+  status         UploadStatus @default(UPLOADING)
+  progress       Int         @default(0)
+  errorMessage   String?
+  metadata       Json?
+  
+  // Processing results
+  accountsFound    Int? @default(0)
+  accountsCreated  Int? @default(0)
+  accountsUpdated  Int? @default(0)
+  insightsGenerated Int? @default(0)
+  processingTime   Int? // milliseconds
+  
+  // Timestamps
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  completedAt    DateTime?
+  
+  // Relations
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId          String?
+  job            Job?        @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  
+  @@index([userId])
+  @@index([status])
+  @@index([fileType])
+}
+
+model ChatSession {
+  id        String   @id @default(cuid())
+  title     String
+  context   Json?    // { accountId?, accountName? }
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Relations
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages  ChatMessage[]
+  
+  @@index([userId])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  role      MessageRole
+  content   String
+  metadata  Json?
+  
+  // Timestamps
+  createdAt DateTime @default(now())
+  
+  // Relations
+  sessionId String
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  
+  @@index([sessionId])
+}
+
+// Enums
+enum JobType {
+  ACCOUNT_ANALYSIS
+  DATA_EXPORT
+  INSIGHT_GENERATION
+  FILE_PROCESSING
+}
+
+// Enhanced processing job types from RSF
+enum ProcessingJobType {
+  IMPORT_ACCOUNTS
+  IMPORT_PRODUCTS  
+  IMPORT_OPPORTUNITIES
+  IMPORT_ASSETS
+  GENERATE_INSIGHTS
+  CHUNK_ACCOUNTS
+  CHUNK_ASSETS
+  NORMALIZE_SUMMARIES
+  VECTORIZE_CONTENT
+  EXPORT_DATA
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+  PENDING
+  CANCELLED
+  PAUSED
+}
+
+enum UploadStatus {
+  UPLOADING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+// Document processing status
+enum DocumentStatus {
+  UPLOADED
+  PARSING
+  CHUNKING
+  VECTORIZING
+  PROCESSED
+  FAILED
+}
+
+// Document scope for categorization
+enum DocumentScope {
+  GENERAL
+  SALES_ASSETS
+  PROPOSALS
+  TRAINING
+  CASE_STUDIES
+  DATA_SHEETS
+  TECHNICAL_DOCS
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
 }

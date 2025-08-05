@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import { auth } from "@/app/(auth)/auth";
-import { Button } from "@/components/ui/button";
 import { MicrosoftSignInButton } from "@/components/microsoft-signin-button";
+import { Button } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
 export default async function Home() {
   const session = await auth();

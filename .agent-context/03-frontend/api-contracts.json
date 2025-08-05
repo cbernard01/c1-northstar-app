@@ -1,0 +1,729 @@
+{
+  "apiVersion": "1.0.0",
+  "baseUrl": "/api",
+  "authentication": "Bearer token in Authorization header",
+  "websocket": {
+    "url": "ws://localhost:3001/ws",
+    "events": {
+      "job-update": {
+        "description": "Real-time job status updates",
+        "payload": {
+          "id": "string",
+          "status": "'queued' | 'running' | 'completed' | 'failed' | 'pending'",
+          "progress": "number (0-100)",
+          "message": "string (optional)",
+          "result": "any (optional)"
+        }
+      },
+      "notification": {
+        "description": "System notifications",
+        "payload": {
+          "id": "string",
+          "type": "'info' | 'success' | 'warning' | 'error'",
+          "title": "string",
+          "message": "string",
+          "timestamp": "number",
+          "read": "boolean"
+        }
+      },
+      "account-updated": {
+        "description": "Account data changes",
+        "payload": {
+          "accountId": "string",
+          "changes": "object"
+        }
+      },
+      "insight-generated": {
+        "description": "New insights generated",
+        "payload": {
+          "insightId": "string",
+          "accountId": "string",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "endpoints": {
+    "auth": {
+      "/auth/session": {
+        "GET": {
+          "description": "Get current user session",
+          "response": {
+            "user": {
+              "id": "string",
+              "name": "string",
+              "email": "string",
+              "image": "string",
+              "role": "string"
+            }
+          }
+        }
+      }
+    },
+    "jobs": {
+      "/jobs": {
+        "GET": {
+          "description": "List jobs with pagination and filtering",
+          "parameters": {
+            "page": "number (optional, default: 1)",
+            "pageSize": "number (optional, default: 20)",
+            "status": "'queued' | 'running' | 'completed' | 'failed' | 'pending' (optional)",
+            "type": "'account_analysis' | 'data_export' | 'insight_generation' (optional)"
+          },
+          "response": {
+            "jobs": "Job[]",
+            "total": "number",
+            "page": "number",
+            "pageSize": "number",
+            "totalPages": "number"
+          }
+        },
+        "POST": {
+          "description": "Create a new job",
+          "body": {
+            "type": "'account_analysis' | 'data_export' | 'insight_generation'",
+            "title": "string",
+            "description": "string (optional)",
+            "metadata": "object (optional)"
+          },
+          "response": "Job"
+        }
+      },
+      "/jobs/{id}": {
+        "GET": {
+          "description": "Get job details",
+          "response": "Job"
+        },
+        "DELETE": {
+          "description": "Cancel job",
+          "response": "void"
+        }
+      },
+      "/jobs/{id}/retry": {
+        "POST": {
+          "description": "Retry failed job",
+          "response": "Job"
+        }
+      },
+      "/jobs/{id}/logs": {
+        "GET": {
+          "description": "Get job execution logs",
+          "response": "string[]"
+        }
+      },
+      "/jobs/{id}/download": {
+        "GET": {
+          "description": "Download job result file",
+          "response": "Blob (file download)"
+        }
+      },
+      "/jobs/stream": {
+        "GET": {
+          "description": "Server-Sent Events for job updates",
+          "response": "EventStream"
+        }
+      },
+      "/jobs/bulk-delete": {
+        "POST": {
+          "description": "Delete multiple jobs",
+          "body": {
+            "ids": "string[]"
+          },
+          "response": "void"
+        }
+      },
+      "/jobs/bulk-retry": {
+        "POST": {
+          "description": "Retry multiple jobs",
+          "body": {
+            "ids": "string[]"
+          },
+          "response": "Job[]"
+        }
+      },
+      "/jobs/stats": {
+        "GET": {
+          "description": "Get job statistics",
+          "response": {
+            "total": "number",
+            "running": "number",
+            "completed": "number",
+            "failed": "number",
+            "queued": "number",
+            "pending": "number"
+          }
+        }
+      }
+    },
+    "accounts": {
+      "/accounts": {
+        "GET": {
+          "description": "List accounts with search and filtering",
+          "parameters": {
+            "page": "number (optional)",
+            "pageSize": "number (optional)",
+            "search": "string (optional)",
+            "industry": "string (optional)",
+            "size": "string (optional)",
+            "location": "string (optional)",
+            "technology": "string (optional)",
+            "sortBy": "'name' | 'createdAt' | 'updatedAt' (optional)",
+            "sortOrder": "'asc' | 'desc' (optional)"
+          },
+          "response": {
+            "accounts": "Account[]",
+            "total": "number",
+            "page": "number",
+            "pageSize": "number",
+            "totalPages": "number",
+            "facets": {
+              "industries": "{ name: string, count: number }[]",
+              "sizes": "{ name: string, count: number }[]",
+              "locations": "{ name: string, count: number }[]",
+              "technologies": "{ name: string, count: number }[]"
+            }
+          }
+        },
+        "POST": {
+          "description": "Create new account",
+          "body": "Partial<Account>",
+          "response": "Account"
+        }
+      },
+      "/accounts/{id}": {
+        "GET": {
+          "description": "Get account details",
+          "response": "Account"
+        },
+        "PUT": {
+          "description": "Update account",
+          "body": "Partial<Account>",
+          "response": "Account"
+        },
+        "DELETE": {
+          "description": "Delete account",
+          "response": "void"
+        }
+      },
+      "/accounts/{id}/insights": {
+        "GET": {
+          "description": "Get insights for account",
+          "response": "Insight[]"
+        }
+      },
+      "/accounts/{id}/technologies": {
+        "GET": {
+          "description": "Get technologies for account",
+          "response": "Technology[]"
+        }
+      },
+      "/accounts/bulk-update": {
+        "POST": {
+          "description": "Update multiple accounts",
+          "body": {
+            "ids": "string[]",
+            "updates": "Partial<Account>"
+          },
+          "response": "Account[]"
+        }
+      },
+      "/accounts/bulk-delete": {
+        "POST": {
+          "description": "Delete multiple accounts",
+          "body": {
+            "ids": "string[]"
+          },
+          "response": "void"
+        }
+      }
+    },
+    "insights": {
+      "/insights": {
+        "GET": {
+          "description": "List insights with filtering",
+          "parameters": {
+            "page": "number (optional)",
+            "pageSize": "number (optional)",
+            "accountId": "string (optional)",
+            "category": "string (optional)",
+            "type": "string (optional)",
+            "confidence": "number (optional, min confidence)",
+            "dateRange": "string (optional, ISO date range)"
+          },
+          "response": {
+            "insights": "Insight[]",
+            "total": "number",
+            "page": "number",
+            "pageSize": "number",
+            "totalPages": "number"
+          }
+        },
+        "POST": {
+          "description": "Create new insight",
+          "body": "Partial<Insight>",
+          "response": "Insight"
+        }
+      },
+      "/insights/{id}": {
+        "GET": {
+          "description": "Get insight details",
+          "response": "Insight"
+        },
+        "PUT": {
+          "description": "Update insight",
+          "body": "Partial<Insight>",
+          "response": "Insight"
+        },
+        "DELETE": {
+          "description": "Delete insight",
+          "response": "void"
+        }
+      },
+      "/insights/{id}/bookmark": {
+        "POST": {
+          "description": "Bookmark insight",
+          "response": "Insight"
+        },
+        "DELETE": {
+          "description": "Remove bookmark",
+          "response": "Insight"
+        }
+      },
+      "/insights/categories": {
+        "GET": {
+          "description": "Get available insight categories",
+          "response": "string[]"
+        }
+      }
+    },
+    "upload": {
+      "/upload": {
+        "POST": {
+          "description": "Simple file upload",
+          "body": "FormData (file + metadata)",
+          "response": {
+            "fileId": "string",
+            "name": "string",
+            "size": "number",
+            "type": "string",
+            "uploadedAt": "string",
+            "processingJobId": "string (optional)"
+          }
+        }
+      },
+      "/upload/init": {
+        "POST": {
+          "description": "Initialize chunked upload",
+          "body": {
+            "fileName": "string",
+            "fileSize": "number",
+            "fileType": "string",
+            "totalChunks": "number",
+            "uploadId": "string"
+          },
+          "response": {
+            "uploadId": "string"
+          }
+        }
+      },
+      "/upload/chunk": {
+        "POST": {
+          "description": "Upload file chunk",
+          "body": "FormData (chunk + metadata)",
+          "response": "void"
+        }
+      },
+      "/upload/complete": {
+        "POST": {
+          "description": "Complete chunked upload",
+          "body": {
+            "uploadId": "string",
+            "fileName": "string",
+            "fileSize": "number",
+            "fileType": "string"
+          },
+          "response": {
+            "fileId": "string",
+            "name": "string",
+            "size": "number",
+            "type": "string",
+            "uploadedAt": "string",
+            "processingJobId": "string (optional)"
+          }
+        }
+      },
+      "/upload/{fileId}/status": {
+        "GET": {
+          "description": "Get upload/processing status",
+          "response": {
+            "status": "'uploading' | 'processing' | 'completed' | 'failed'",
+            "progress": "number",
+            "error": "string (optional)",
+            "result": "ProcessingResult (optional)"
+          }
+        }
+      },
+      "/upload/{fileId}/result": {
+        "GET": {
+          "description": "Get processing result",
+          "response": {
+            "accountsFound": "number",
+            "accountsCreated": "number",
+            "accountsUpdated": "number",
+            "insightsGenerated": "number",
+            "technologiesIdentified": "string[]",
+            "errors": "string[]",
+            "warnings": "string[]",
+            "processingTime": "number"
+          }
+        }
+      },
+      "/upload/{fileId}/download": {
+        "GET": {
+          "description": "Download processed data",
+          "parameters": {
+            "format": "'json' | 'csv' | 'xlsx' (optional, default: json)"
+          },
+          "response": "Blob (file download)"
+        }
+      },
+      "/upload/{fileId}/retry": {
+        "POST": {
+          "description": "Retry failed processing",
+          "response": {
+            "jobId": "string"
+          }
+        }
+      },
+      "/upload/{fileId}": {
+        "DELETE": {
+          "description": "Delete uploaded file",
+          "response": "void"
+        }
+      },
+      "/upload/history": {
+        "GET": {
+          "description": "Get upload history",
+          "parameters": {
+            "page": "number (optional)",
+            "pageSize": "number (optional)",
+            "status": "string (optional)",
+            "dateRange": "string[] (optional, [start, end])"
+          },
+          "response": {
+            "uploads": "UploadFile[]",
+            "total": "number",
+            "page": "number",
+            "pageSize": "number",
+            "totalPages": "number"
+          }
+        }
+      },
+      "/upload/bulk-delete": {
+        "POST": {
+          "description": "Delete multiple uploads",
+          "body": {
+            "fileIds": "string[]"
+          },
+          "response": "void"
+        }
+      },
+      "/upload/stats": {
+        "GET": {
+          "description": "Get upload statistics",
+          "response": {
+            "totalUploads": "number",
+            "totalSize": "number",
+            "successRate": "number",
+            "averageProcessingTime": "number",
+            "byStatus": "Record<string, number>",
+            "byType": "Record<string, number>"
+          }
+        }
+      }
+    },
+    "export": {
+      "/export": {
+        "POST": {
+          "description": "Create export job",
+          "body": {
+            "type": "'accounts' | 'insights' | 'jobs' | 'reports'",
+            "format": "'csv' | 'xlsx' | 'json'",
+            "filters": "object (optional)",
+            "columns": "string[] (optional)",
+            "includeMetadata": "boolean (optional)",
+            "dateRange": "{ start: string, end: string } (optional)"
+          },
+          "response": {
+            "id": "string",
+            "type": "string",
+            "format": "string",
+            "status": "'queued' | 'processing' | 'completed' | 'failed'",
+            "progress": "number",
+            "createdAt": "string",
+            "completedAt": "string (optional)",
+            "downloadUrl": "string (optional)",
+            "fileSize": "number (optional)",
+            "recordCount": "number (optional)",
+            "error": "string (optional)"
+          }
+        }
+      },
+      "/export/{exportId}": {
+        "GET": {
+          "description": "Get export status",
+          "response": "ExportJob"
+        },
+        "DELETE": {
+          "description": "Cancel export",
+          "response": "void"
+        }
+      },
+      "/export/{exportId}/download": {
+        "GET": {
+          "description": "Download export file",
+          "response": "Blob (file download)"
+        }
+      },
+      "/export/preview": {
+        "POST": {
+          "description": "Preview export data",
+          "body": "ExportRequest & { limit: number }",
+          "response": {
+            "columns": "string[]",
+            "sample": "any[]",
+            "totalCount": "number"
+          }
+        }
+      },
+      "/export/history": {
+        "GET": {
+          "description": "Get export history",
+          "parameters": {
+            "page": "number (optional)",
+            "pageSize": "number (optional)",
+            "type": "string (optional)",
+            "status": "string (optional)"
+          },
+          "response": {
+            "exports": "ExportJob[]",
+            "total": "number",
+            "page": "number",
+            "pageSize": "number",
+            "totalPages": "number"
+          }
+        }
+      },
+      "/export/bulk": {
+        "POST": {
+          "description": "Create multiple exports",
+          "body": {
+            "requests": "ExportRequest[]"
+          },
+          "response": "ExportJob[]"
+        }
+      }
+    },
+    "chat": {
+      "/chat/sessions": {
+        "GET": {
+          "description": "List chat sessions",
+          "response": "ChatSession[]"
+        },
+        "POST": {
+          "description": "Create new chat session",
+          "body": {
+            "title": "string (optional)",
+            "context": "{ accountId?: string, accountName?: string } (optional)"
+          },
+          "response": "ChatSession"
+        }
+      },
+      "/chat/sessions/{sessionId}": {
+        "GET": {
+          "description": "Get chat session",
+          "response": "ChatSession"
+        },
+        "DELETE": {
+          "description": "Delete chat session",
+          "response": "void"
+        }
+      },
+      "/chat/sessions/{sessionId}/messages": {
+        "POST": {
+          "description": "Send message to chat session",
+          "body": {
+            "message": "string",
+            "context": "{ accountId?: string, accountName?: string } (optional)"
+          },
+          "response": {
+            "response": "ChatMessage",
+            "sessionId": "string",
+            "suggestions": "string[] (optional)"
+          }
+        }
+      },
+      "/chat/stream": {
+        "POST": {
+          "description": "Stream chat response",
+          "body": {
+            "message": "string",
+            "sessionId": "string (optional)",
+            "context": "{ accountId?: string, accountName?: string } (optional)"
+          },
+          "response": "EventStream (Server-Sent Events)"
+        }
+      }
+    },
+    "reports": {
+      "/reports": {
+        "GET": {
+          "description": "List available reports",
+          "response": "Report[]"
+        }
+      },
+      "/reports/{reportId}": {
+        "GET": {
+          "description": "Get report data",
+          "parameters": {
+            "dateRange": "string (optional)",
+            "filters": "object (optional)"
+          },
+          "response": "ReportData"
+        }
+      },
+      "/reports/dashboard": {
+        "GET": {
+          "description": "Get dashboard metrics",
+          "response": {
+            "totalAccounts": "number",
+            "totalInsights": "number",
+            "activeJobs": "number",
+            "recentActivity": "Activity[]",
+            "trends": "TrendData[]"
+          }
+        }
+      }
+    }
+  },
+  "types": {
+    "Job": {
+      "id": "string",
+      "type": "'account_analysis' | 'data_export' | 'insight_generation'",
+      "title": "string",
+      "description": "string (optional)",
+      "status": "'queued' | 'running' | 'completed' | 'failed' | 'pending'",
+      "progress": "number (0-100)",
+      "createdAt": "string (ISO date)",
+      "updatedAt": "string (ISO date)",
+      "startedAt": "string (ISO date, optional)",
+      "completedAt": "string (ISO date, optional)",
+      "failedAt": "string (ISO date, optional)",
+      "errorMessage": "string (optional)",
+      "result": "any (optional)",
+      "metadata": "object (optional)"
+    },
+    "Account": {
+      "id": "string",
+      "name": "string",
+      "domain": "string",
+      "industry": "string",
+      "size": "string",
+      "location": "string",
+      "description": "string (optional)",
+      "website": "string (optional)",
+      "technologies": "Technology[]",
+      "contacts": "Contact[]",
+      "insights": "Insight[]",
+      "metadata": "object (optional)",
+      "createdAt": "string (ISO date)",
+      "updatedAt": "string (ISO date)"
+    },
+    "Insight": {
+      "id": "string",
+      "accountId": "string",
+      "type": "string",
+      "title": "string",
+      "description": "string",
+      "confidence": "number (0-1)",
+      "category": "string",
+      "tags": "string[]",
+      "isBookmarked": "boolean",
+      "metadata": "object (optional)",
+      "createdAt": "string (ISO date)",
+      "updatedAt": "string (ISO date)"
+    },
+    "Technology": {
+      "id": "string",
+      "name": "string",
+      "category": "string",
+      "version": "string (optional)",
+      "confidence": "number (0-1)",
+      "source": "string",
+      "metadata": "object (optional)"
+    },
+    "Contact": {
+      "id": "string",
+      "name": "string",
+      "email": "string (optional)",
+      "title": "string (optional)",
+      "department": "string (optional)",
+      "linkedIn": "string (optional)",
+      "metadata": "object (optional)"
+    },
+    "ChatMessage": {
+      "id": "string",
+      "role": "'user' | 'assistant' | 'system'",
+      "content": "string",
+      "timestamp": "string (ISO date)",
+      "metadata": "object (optional)"
+    },
+    "ChatSession": {
+      "id": "string",
+      "title": "string",
+      "messages": "ChatMessage[]",
+      "context": "{ accountId?: string, accountName?: string } (optional)",
+      "createdAt": "string (ISO date)",
+      "updatedAt": "string (ISO date)"
+    }
+  },
+  "errorCodes": {
+    "400": "Bad Request - Invalid input data",
+    "401": "Unauthorized - Authentication required",
+    "403": "Forbidden - Insufficient permissions",
+    "404": "Not Found - Resource does not exist",
+    "409": "Conflict - Resource already exists or conflict",
+    "422": "Unprocessable Entity - Validation errors",
+    "429": "Too Many Requests - Rate limit exceeded",
+    "500": "Internal Server Error - Server error",
+    "503": "Service Unavailable - Service temporarily unavailable"
+  },
+  "rateLimits": {
+    "/api/jobs": "100 requests per minute per user",
+    "/api/upload": "10 requests per minute per user",
+    "/api/export": "20 requests per minute per user",
+    "/api/chat": "60 requests per minute per user",
+    "/api/accounts": "200 requests per minute per user",
+    "/api/insights": "200 requests per minute per user"
+  },
+  "environmentVariables": {
+    "required": [
+      "NEXTAUTH_URL",
+      "NEXTAUTH_SECRET",
+      "DATABASE_URL",
+      "AZURE_AD_CLIENT_ID",
+      "AZURE_AD_CLIENT_SECRET",
+      "AZURE_AD_TENANT_ID"
+    ],
+    "optional": [
+      "FLOWISE_API_URL",
+      "FLOWISE_CHATFLOW_ID",
+      "FLOWISE_API_KEY",
+      "WEBSOCKET_URL",
+      "REDIS_URL",
+      "FILE_STORAGE_URL",
+      "MAX_FILE_SIZE",
+      "MAX_FILES_PER_UPLOAD"
+    ]
+  }
+}
